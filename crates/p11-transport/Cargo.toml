@@ -1,0 +1,28 @@
+[package]
+name = "p11-transport"
+description = "Byte streams between the client library and the daemon: unix sockets, TLS over TCP (certificates or pre-shared keys), stdio"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[features]
+default = ["psk"]
+# TLS with pre-shared keys. rustls does not implement external PSKs, so this uses the system OpenSSL.
+psk = ["dep:openssl"]
+
+[dependencies]
+libc = "0.2"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+rustls-pki-types = { version = "1", features = ["std"] }
+x509-parser = "0.17"
+sha2 = "0.10"
+openssl = { version = "0.10", optional = true }
+
+[dev-dependencies]
+rcgen = { version = "0.13", default-features = false, features = ["ring", "pem"] }
+tempfile = "3"

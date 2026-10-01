@@ -1,0 +1,21 @@
+[package]
+name = "p11-conformance"
+description = "A scripted PKCS#11 scenario and a benchmark that run against any module, to compare the proxy with the module it fronts and with the C implementation"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+p11-types = { path = "../p11-types" }
+p11-params = { path = "../p11-params" }
+libloading = "0.8"
+
+[dev-dependencies]
+p11-testkit = { path = "../p11-testkit" }
+tempfile = "3"
+libc = "0.2"

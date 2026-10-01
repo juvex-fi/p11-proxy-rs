@@ -1,0 +1,22 @@
+[package]
+name = "p11-testkit"
+description = "Test support: a SoftHSM fixture, an in-memory mock token, helpers to talk to a Backend"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+p11-types = { path = "../p11-types" }
+p11-wire = { path = "../p11-wire" }
+p11-params = { path = "../p11-params" }
+p11-module = { path = "../p11-module" }
+tempfile = "3"
+p11-daemon = { path = "../p11-daemon", default-features = false, features = ["psk"] }
+p11-transport = { path = "../p11-transport" }
+libc = "0.2"
+rcgen = { version = "0.13", default-features = false, features = ["ring", "pem"] }

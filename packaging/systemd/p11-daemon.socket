@@ -1,0 +1,16 @@
+# A daemon per connection on a local socket, started by systemd (the "stdio"
+# transport). TCP is not offered this way: stdio has no TLS. The daemon loads
+# the module for every connection, so use this for cheap modules and low call
+# rates.
+[Unit]
+Description=PKCS#11 proxy socket (per-connection daemon)
+
+[Socket]
+ListenStream=/run/pkcs11/inetd.sock
+SocketMode=0660
+SocketUser=pkcs11
+SocketGroup=pkcs11
+Accept=yes
+
+[Install]
+WantedBy=sockets.target

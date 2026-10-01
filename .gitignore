@@ -1,0 +1,8 @@
+/target
+*.swp
+.DS_Store
+/target-linux
+/target-fuzz
+/fuzz/artifacts
+/fuzz/corpus
+/contrib

@@ -1,0 +1,11 @@
+[package]
+name = "p11-types"
+description = "PKCS#11 v3.2 C types and constants, generated once with bindgen from the OASIS headers"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lints]
+workspace = true

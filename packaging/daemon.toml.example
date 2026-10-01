@@ -1,0 +1,33 @@
+# /etc/pkcs11/daemon.toml: p11-daemon configuration. See docs/CONFIG.md.
+
+module = "/usr/lib/softhsm/libsofthsm2.so"
+listen = ["tcp://0.0.0.0:2345"]
+
+[tls]
+cert = "/etc/pkcs11/server.pem"
+key = "/etc/pkcs11/server.key"
+client_ca = "/etc/pkcs11/clients-ca.pem"
+
+# A vendor-defined mechanism whose parameter has no pointers; clients learn of it in
+# the handshake. See docs/CONFIG.md.
+# [[vendor_mechanism]]
+# id = 0x80000123
+# length = 16
+
+[limits]
+max_connections = 256
+handshake_timeout = 10
+
+# Only the listed clients get in, each with what it needs.
+[policy]
+default = "deny"
+
+[[client]]
+identity = "cert:cn=signer"
+mechanisms = ["CKM_ECDSA", "CKM_ECDSA_SHA256", "CKM_SHA256"]
+max_sessions = 8
+deny_attributes = ["CKA_EXTRACTABLE"]
+
+[[client]]
+identity = "cert:cn=auditor"
+read_only = true

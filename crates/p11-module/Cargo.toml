@@ -1,0 +1,28 @@
+[package]
+name = "p11-module"
+description = "The Backend trait (one method per PKCS#11 call), the implementation that drives a real module through dlopen, and an in-memory mock"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[features]
+default = []
+# Find a module's exported vendor-defined functions by name (see docs/CONFIG.md).
+vendor = []
+
+[dependencies]
+p11-types = { path = "../p11-types" }
+p11-wire = { path = "../p11-wire" }
+p11-params = { path = "../p11-params" }
+libloading = "0.8"
+
+[build-dependencies]
+p11-idl = { path = "../p11-idl" }
+
+[dev-dependencies]
+p11-testkit = { path = "../p11-testkit" }

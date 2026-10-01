@@ -1,0 +1,11 @@
+[package]
+name = "p11-idl"
+description = "The single description of the PKCS#11 API as the proxy carries it, and the code generators that read it"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lints]
+workspace = true

@@ -1,0 +1,14 @@
+[Unit]
+Description=PKCS#11 proxy daemon (one connection)
+
+[Service]
+ExecStart=/usr/bin/p11-daemon --listen stdio --config /etc/pkcs11/daemon.toml
+StandardInput=socket
+StandardOutput=socket
+User=pkcs11
+Group=pkcs11
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadWritePaths=/var/lib/softhsm

@@ -1,0 +1,24 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.85"
+license = "LGPL-2.1-or-later"
+repository = "https://github.com/juvex-fi/p11-proxy-rs"
+
+[workspace.lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+missing_debug_implementations = "warn"
+
+[workspace.lints.clippy]
+undocumented_unsafe_blocks = "warn"
+# CK_ULONG is u64 on the supported targets, but the casts document intent and survive a narrower type
+unnecessary_cast = "allow"
+
+[profile.release]
+lto = "thin"
+panic = "unwind"      # the C ABI layer relies on catch_unwind
+codegen-units = 1

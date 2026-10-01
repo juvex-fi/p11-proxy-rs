@@ -1,0 +1,41 @@
+[package]
+name = "p11-client"
+description = "libp11-proxy: a PKCS#11 module that forwards every call to a remote p11-daemon"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+name = "p11_proxy"
+crate-type = ["cdylib", "rlib"]
+
+[lints]
+workspace = true
+
+[features]
+default = ["psk", "vendor"]
+# TLS with pre-shared keys (uses the system OpenSSL)
+psk = ["p11-transport/psk"]
+# Vendor-defined mechanisms and functions announced by the daemon, and the exported names of a known SDK's functions.
+vendor = ["p11-params/vendor"]
+
+[dependencies]
+p11-types = { path = "../p11-types" }
+p11-wire = { path = "../p11-wire" }
+p11-params = { path = "../p11-params" }
+p11-transport = { path = "../p11-transport", default-features = false }
+libc = "0.2"
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
+
+[dev-dependencies]
+tempfile = "3"
+p11-testkit = { path = "../p11-testkit" }
+p11-daemon = { path = "../p11-daemon" }
+p11-module = { path = "../p11-module" }
+libloading = "0.8"
+
+[build-dependencies]
+p11-idl = { path = "../p11-idl" }

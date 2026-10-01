@@ -1,0 +1,21 @@
+[package]
+name = "p11-wire"
+description = "Wire format of the p11-proxy protocol: framing, handshake, value codec. No I/O beyond std::io traits, no unsafe."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+zeroize = "1"
+p11-types = { path = "../p11-types" }
+
+[dev-dependencies]
+proptest = "1"
+
+[build-dependencies]
+p11-idl = { path = "../p11-idl" }

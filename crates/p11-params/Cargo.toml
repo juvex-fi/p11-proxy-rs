@@ -1,0 +1,24 @@
+[package]
+name = "p11-params"
+description = "Conversion between C-side PKCS#11 structures (attribute arrays, mechanism parameters, info structures) and the wire values that carry them. Holds the unsafe pointer work for both the client and the daemon."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[features]
+default = []
+# Vendor-defined mechanisms and functions: the registry, structure layouts and the marshalling of vendor calls.
+vendor = ["dep:serde"]
+
+[dependencies]
+p11-types = { path = "../p11-types" }
+p11-wire = { path = "../p11-wire" }
+serde = { version = "1", features = ["derive"], optional = true }
+
+[dev-dependencies]
+proptest = "1"

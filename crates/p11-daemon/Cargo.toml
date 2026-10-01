@@ -1,0 +1,45 @@
+[package]
+name = "p11-daemon"
+description = "p11-daemon: serves a PKCS#11 module to remote clients"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[features]
+default = ["psk", "vendor"]
+psk = ["p11-transport/psk"]
+# Vendor-defined mechanisms and functions (docs/CONFIG.md); without it the daemon refuses a configuration that names them.
+vendor = ["p11-params/vendor", "p11-module/vendor"]
+
+[[bin]]
+name = "p11-daemon"
+path = "src/main.rs"
+
+[dependencies]
+p11-types = { path = "../p11-types" }
+p11-wire = { path = "../p11-wire" }
+p11-params = { path = "../p11-params" }
+p11-module = { path = "../p11-module" }
+p11-sandbox = { path = "../p11-sandbox" }
+p11-transport = { path = "../p11-transport", default-features = false }
+getrandom = "0.3"
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
+clap = { version = "4", features = ["derive", "env"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "env-filter", "ansi"] }
+libc = "0.2"
+
+[dev-dependencies]
+p11-testkit = { path = "../p11-testkit" }
+p11-client = { path = "../p11-client" }
+tempfile = "3"
+libc = "0.2"
+
+[build-dependencies]
+p11-idl = { path = "../p11-idl" }

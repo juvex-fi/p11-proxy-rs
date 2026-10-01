@@ -1,0 +1,7 @@
+# Point PKCS11_PROXY_CONFIG at this file. See docs/CONFIG.md.
+
+socket = "tcp://hsm.example.org:2345"
+ca = "/etc/pkcs11/ca.pem"
+cert = "/etc/pkcs11/client.pem"
+key = "/etc/pkcs11/client.key"
+timeout = 60

@@ -1,0 +1,115 @@
+# The PKCS#11 calls the proxy carries.
+#
+#   id  name  [flags...] : name:kind ...
+#
+# Arguments are listed in C order; a kind may stand for several C parameters
+# (a pointer and its length, a buffer and its length pointer). The kinds and
+# what they become are documented in lib.rs. Flags:
+#   since=X   first PKCS#11 version with the call: 2.40 (default), 3.0, 3.2
+#   rw        changes the token (refused in read-only mode)
+#   custom    the client stub is written by hand
+#   special   the daemon handles the call itself (state changes)
+#
+# The ids are part of the wire protocol: never renumber, only append.
+
+1   C_Initialize            custom special :
+2   C_Finalize              custom special :
+3   C_GetInfo               : info:o_info
+4   C_GetSlotList           special : token_present:bool slots:o_u64s
+5   C_GetSlotInfo           : slot:slot info:o_slot_info
+6   C_GetTokenInfo          : slot:slot info:o_token_info
+7   C_GetMechanismList      special : slot:slot mechanisms:o_u64s
+8   C_GetMechanismInfo      : slot:slot mechanism:u64 info:o_mech_info
+9   C_InitToken             rw : slot:slot pin:secret label:label
+10  C_WaitForSlotEvent      custom : flags:u64 slot:o_u64
+11  C_OpenSession           custom special : slot:slot flags:u64 session:o_session
+12  C_CloseSession          special : session:session
+13  C_CloseAllSessions      special : slot:slot
+14  C_GetFunctionStatus     : session:session
+15  C_CancelFunction        : session:session
+16  C_GetSessionInfo        : session:session info:o_session_info
+17  C_InitPIN               rw : session:session pin:secret
+18  C_SetPIN                rw : session:session old_pin:secret new_pin:secret
+19  C_GetOperationState     : session:session state:o_bytes
+20  C_SetOperationState     : session:session state:bytes encryption_key:object authentication_key:object
+21  C_Login                 : session:session user_type:u64 pin:secret
+22  C_Logout                : session:session
+23  C_CreateObject          rw : session:session template:attrs object:o_object
+24  C_CopyObject            rw : session:session object:object template:attrs new_object:o_object
+25  C_DestroyObject         rw : session:session object:object
+26  C_GetObjectSize         : session:session object:object size:o_u64
+27  C_GetAttributeValue     : session:session object:object template:attrs_query
+28  C_SetAttributeValue     rw : session:session object:object template:attrs
+29  C_FindObjectsInit       : session:session template:attrs
+30  C_FindObjects           : session:session objects:o_handles
+31  C_FindObjectsFinal      : session:session
+32  C_EncryptInit           : session:session mechanism:mech key:object
+33  C_Encrypt               : session:session data:bytes encrypted:o_bytes
+34  C_EncryptUpdate         : session:session part:bytes encrypted:o_bytes
+35  C_EncryptFinal          : session:session last:o_bytes
+36  C_DecryptInit           : session:session mechanism:mech key:object
+37  C_Decrypt               : session:session encrypted:bytes data:o_bytes
+38  C_DecryptUpdate         : session:session encrypted:bytes part:o_bytes
+39  C_DecryptFinal          : session:session last:o_bytes
+40  C_DigestInit            : session:session mechanism:mech
+41  C_Digest                : session:session data:bytes digest:o_bytes
+42  C_DigestUpdate          : session:session part:bytes
+43  C_DigestKey             : session:session key:object
+44  C_DigestFinal           : session:session digest:o_bytes
+45  C_SignInit              : session:session mechanism:mech key:object
+46  C_Sign                  : session:session data:bytes signature:o_bytes
+47  C_SignUpdate            : session:session part:bytes
+48  C_SignFinal             : session:session signature:o_bytes
+49  C_SignRecoverInit       : session:session mechanism:mech key:object
+50  C_SignRecover           : session:session data:bytes signature:o_bytes
+51  C_VerifyInit            : session:session mechanism:mech key:object
+52  C_Verify                : session:session data:bytes signature:bytes
+53  C_VerifyUpdate          : session:session part:bytes
+54  C_VerifyFinal           : session:session signature:bytes
+55  C_VerifyRecoverInit     : session:session mechanism:mech key:object
+56  C_VerifyRecover         : session:session signature:bytes data:o_bytes
+57  C_DigestEncryptUpdate   : session:session part:bytes encrypted:o_bytes
+58  C_DecryptDigestUpdate   : session:session encrypted:bytes part:o_bytes
+59  C_SignEncryptUpdate     : session:session part:bytes encrypted:o_bytes
+60  C_DecryptVerifyUpdate   : session:session encrypted:bytes part:o_bytes
+61  C_GenerateKey           rw : session:session mechanism:mech template:attrs key:o_object
+62  C_GenerateKeyPair       rw : session:session mechanism:mech public_template:attrs private_template:attrs public_key:o_object private_key:o_object
+63  C_WrapKey               : session:session mechanism:mech wrapping_key:object key:object wrapped:o_bytes
+64  C_UnwrapKey             rw : session:session mechanism:mech unwrapping_key:object wrapped:bytes template:attrs key:o_object
+65  C_DeriveKey             rw : session:session mechanism:mech base_key:object template:attrs key:o_object
+66  C_SeedRandom            rw : session:session seed:bytes
+67  C_GenerateRandom        : session:session random:o_fixed
+68  C_LoginUser             since=3.0 : session:session user_type:u64 pin:secret username:secret
+69  C_SessionCancel         since=3.0 : session:session flags:u64
+70  C_MessageEncryptInit    since=3.0 special : session:session mechanism:mech key:object
+71  C_EncryptMessage        since=3.0 : session:session parameter:msgparam associated_data:bytes plaintext:bytes ciphertext:o_bytes
+72  C_EncryptMessageBegin   since=3.0 : session:session parameter:msgparam associated_data:bytes
+73  C_EncryptMessageNext    since=3.0 : session:session parameter:msgparam plaintext:bytes ciphertext:o_bytes flags:u64
+74  C_MessageEncryptFinal   since=3.0 : session:session
+75  C_MessageDecryptInit    since=3.0 special : session:session mechanism:mech key:object
+76  C_DecryptMessage        since=3.0 : session:session parameter:msgparam associated_data:bytes ciphertext:bytes plaintext:o_bytes
+77  C_DecryptMessageBegin   since=3.0 : session:session parameter:msgparam associated_data:bytes
+78  C_DecryptMessageNext    since=3.0 : session:session parameter:msgparam ciphertext:bytes plaintext:o_bytes flags:u64
+79  C_MessageDecryptFinal   since=3.0 : session:session
+80  C_MessageSignInit       since=3.0 special : session:session mechanism:mech key:object
+81  C_SignMessage           since=3.0 : session:session parameter:msgparam data:bytes signature:o_bytes
+82  C_SignMessageBegin      since=3.0 : session:session parameter:msgparam
+83  C_SignMessageNext       since=3.0 : session:session parameter:msgparam data:bytes signature:o_bytes
+84  C_MessageSignFinal      since=3.0 : session:session
+85  C_MessageVerifyInit     since=3.0 special : session:session mechanism:mech key:object
+86  C_VerifyMessage         since=3.0 : session:session parameter:msgparam data:bytes signature:bytes
+87  C_VerifyMessageBegin    since=3.0 : session:session parameter:msgparam
+88  C_VerifyMessageNext     since=3.0 : session:session parameter:msgparam data:bytes signature:bytes
+89  C_MessageVerifyFinal    since=3.0 : session:session
+90  C_EncapsulateKey        since=3.2 rw : session:session mechanism:mech public_key:object template:attrs ciphertext:o_bytes key:o_object
+91  C_DecapsulateKey        since=3.2 rw : session:session mechanism:mech private_key:object template:attrs ciphertext:bytes key:o_object
+92  C_VerifySignatureInit   since=3.2 : session:session mechanism:mech key:object signature:bytes
+93  C_VerifySignature       since=3.2 : session:session data:bytes
+94  C_VerifySignatureUpdate since=3.2 : session:session part:bytes
+95  C_VerifySignatureFinal  since=3.2 : session:session
+96  C_GetSessionValidationFlags since=3.2 : session:session kind:u64 flags:o_u64
+97  C_AsyncComplete         since=3.2 : session:session function_name:cstr result:asyncdata
+98  C_AsyncGetID            since=3.2 : session:session function_name:cstr id:o_u64
+99  C_AsyncJoin             since=3.2 : session:session function_name:cstr id:u64 data:o_fixed
+100 C_WrapKeyAuthenticated  since=3.2 : session:session mechanism:mech wrapping_key:object key:object associated_data:bytes wrapped:o_bytes
+101 C_UnwrapKeyAuthenticated since=3.2 rw : session:session mechanism:mech unwrapping_key:object wrapped:bytes template:attrs associated_data:bytes key:o_object

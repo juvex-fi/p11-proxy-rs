@@ -1,0 +1,31 @@
+[Unit]
+Description=PKCS#11 proxy daemon
+Documentation=https://github.com/juvex-fi/p11-proxy-rs
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/p11-daemon --config /etc/pkcs11/daemon.toml
+User=pkcs11
+Group=pkcs11
+Restart=on-failure
+RuntimeDirectory=pkcs11
+RuntimeDirectoryMode=0750
+
+# The daemon confines itself with seccomp once it is up; systemd narrows
+# what it can reach before that.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=no
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+LockPersonality=yes
+# where the token lives, if the module writes to it (SoftHSM does)
+ReadWritePaths=/var/lib/softhsm
+
+[Install]
+WantedBy=multi-user.target
